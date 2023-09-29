@@ -7,6 +7,8 @@ class Agent():
     def __init__(self, encodedGrid):
         self.grid = self.decodeGrid(encodedGrid)
         self.stop = False
+        self.cancel = False
+        self.solutions = []
 
     def decodeGrid(self, encodedGrid):
         grid = []
@@ -19,34 +21,45 @@ class Agent():
         return grid
     
     def run(self):
-        while not self.stop:
+        while not self.stop and not self.cancel:
             self.stop = True
             for cell in range(81):
                 self.reduceOptions(cell)
         print("")
+        print("Reduced Grid: ")
         print(self.grid)
 
         self.stop = False
-        while not self.stop:
+        while not self.stop and not self.cancel:
             gridCopy = deepcopy(self.grid)
             self.stop = True
             for cell in range(81):
-                for value in gridCopy[cell]:
-                    if not self.isValid(deepcopy(gridCopy), cell, value):
-                        self.grid[cell].remove(value)
-                        self.stop = False
+                if not self.cancel:
+                    for value in gridCopy[cell]:
+                        if not self.isValid(deepcopy(self.grid), cell, value):
+                            self.grid[cell].remove(value)
+                            if len(self.grid[cell]) == 0:
+                                self.cancel = True
+                                print("")
+                                print(self.grid)
+                                break
+                            print("")
+                            print(self.grid)
+                            self.stop = False
         print("")
-        print(self.grid)
+        print("ALL SOLUTIONS: (Number of solutions: " + str(len(self.solutions)) + ")")
+        print(self.solutions)
+        print("")
     
     def reduceOptions(self, cell):
         options = copy(self.grid[cell])
         for value in options:
-            for testCell in range(81):
-                if self.sees(cell, testCell):
-                    if len(self.grid[testCell]) == 1 and self.grid[testCell][0] == value:
-                        self.grid[cell].remove(value)
-                        self.stop = False
-                        break
+            if self.isContradiction(self.grid, cell, value):
+                self.grid[cell].remove(value)
+                if len(self.grid[cell]) == 0:
+                    self.cancel = True
+                self.stop = False
+                break
     
     def isValid(self, grid, cell, value): # don't use self.grid in this function
         if self.isContradiction(grid, cell, value):
@@ -58,6 +71,19 @@ class Agent():
                 if self.isValid(copy(newGrid), cell + 1, value):
                     return True
             return False
+        else:
+            cancelAppend = False
+            for solutionCell in newGrid:
+                if len(solutionCell) != 1:
+                    cancelAppend = True
+                    break
+            if not cancelAppend:
+                for existingSolution in self.solutions:
+                    if newGrid == existingSolution:
+                        cancelAppend = True
+                        break
+            if not cancelAppend:
+                self.solutions.append(copy(newGrid))
         return True
 
 
@@ -86,7 +112,5 @@ class Agent():
         
         return False
 
-solver = Agent("080600090100840000500000300002700000069000250000008600008000001000062005050004030")
+solver = Agent("")
 solver.run()
-
-# "937485020460273059852100734324790508710854302580021497605910273178602045293047601"
