@@ -1,10 +1,12 @@
 import numpy as np
 import math
 from copy import copy
+from copy import deepcopy
 
 class Agent():
     def __init__(self, encodedGrid):
         self.grid = self.decodeGrid(encodedGrid)
+        self.stop = False
 
     def decodeGrid(self, encodedGrid):
         grid = []
@@ -17,13 +19,22 @@ class Agent():
         return grid
     
     def run(self):
-        for cell in range(81):
-            self.findValidOptions(self.grid, cell)
+        while not self.stop:
+            self.stop = True
+            for cell in range(81):
+                self.findValidOptions(deepcopy(self.grid), cell)
+        print("")
+        print(self.grid)
     
     def findValidOptions(self, grid, cell):
-        pass
-            
-
+        options = copy(grid[cell])
+        for value in options:
+            for testCell in range(81):
+                if self.sees(cell, testCell):
+                    if len(self.grid[testCell]) == 1 and self.grid[testCell][0] == value:
+                        self.grid[cell].remove(value)
+                        self.stop = False
+                        break
 
     def sees(self, cell1, cell2):
         if cell1 == cell2:
@@ -43,5 +54,7 @@ class Agent():
         
         return False
 
-solver = Agent("080600090100840000500000300002700000069000250000008600008000001000062005050004030")
+solver = Agent("907080000060203009850000004324790000700804002000021497600000073100602040000040601")
 solver.run()
+
+# "937485020460273059852100734324790508710854302580021497605910273178602045293047601"
