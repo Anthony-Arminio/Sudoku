@@ -18,19 +18,12 @@ class Agent():
     
     def run(self):
         for cell in range(81):
-            self.grid[cell] = self.findValidOptions(cell, 1)
-        print(self.grid)
+            self.findValidOptions(self.grid, cell)
     
-    def findValidOptions(self, cell, depth):
-        validOptions = copy(self.grid[cell])
-        for value in self.grid[cell]:
-            for testCell in range(81):
-                if self.sees(cell, testCell):
-                    if len(self.grid[testCell]) == 1 and self.grid[testCell][0] == value:
-                        validOptions.remove(value)
-                        break
+    def findValidOptions(self, grid, cell):
+        pass
+            
 
-        return validOptions
 
     def sees(self, cell1, cell2):
         if cell1 == cell2:
