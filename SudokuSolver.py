@@ -27,7 +27,7 @@ class Agent():
                 self.reduceOptions(cell)
         print("")
         print("Reduced Grid: ")
-        print(self.grid)
+        self.printGrid(self.grid, 2)
 
         self.stop = False
         while not self.stop and not self.cancel:
@@ -41,15 +41,16 @@ class Agent():
                             if len(self.grid[cell]) == 0:
                                 self.cancel = True
                                 print("")
-                                print(self.grid)
+                                self.printGrid(self.grid, 2)
                                 break
                             print("")
-                            print(self.grid)
+                            self.printGrid(self.grid, 2)
                             self.stop = False
         print("")
         print("ALL SOLUTIONS: (Number of solutions: " + str(len(self.solutions)) + ")")
-        print(self.solutions)
-        print("")
+        for solution in self.solutions:
+            self.printGrid(solution, 1)
+            print("")
     
     def reduceOptions(self, cell):
         options = copy(self.grid[cell])
@@ -112,5 +113,14 @@ class Agent():
         
         return False
 
-solver = Agent("")
+    def printGrid(self, grid, width):
+        for cell in range(81):
+            element = str(grid[cell])
+            while len(element) < 3 * width:
+                element += "   "
+            print(element, end="")
+            if cell % 9 == 8:
+                print("")
+
+solver = Agent("005000600000000204000076090080700001400168002200009080060520000801000000003000700")
 solver.run()
