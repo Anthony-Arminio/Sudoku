@@ -23,6 +23,8 @@ class Agent():
             self.stop = True
             for cell in range(81):
                 self.reduceOptions(cell)
+        print("")
+        print(self.grid)
 
         self.stop = False
         while not self.stop:
@@ -84,7 +86,7 @@ class Agent():
         
         return False
 
-solver = Agent("060900000000010703000075090040700680009000400017008050070130000504090000000007020")
+solver = Agent("080600090100840000500000300002700000069000250000008600008000001000062005050004030")
 solver.run()
 
 # "937485020460273059852100734324790508710854302580021497605910273178602045293047601"
