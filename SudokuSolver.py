@@ -29,28 +29,16 @@ class Agent():
         print("Reduced Grid: ")
         self.printGrid(self.grid, 2)
 
-        self.stop = False
-        while not self.stop and not self.cancel:
-            gridCopy = deepcopy(self.grid)
-            self.stop = True
-            for cell in range(81):
-                if not self.cancel:
-                    for value in gridCopy[cell]:
-                        if not self.isValid(deepcopy(self.grid), cell, value):
-                            self.grid[cell].remove(value)
-                            if len(self.grid[cell]) == 0:
-                                self.cancel = True
-                                print("")
-                                self.printGrid(self.grid, 2)
-                                break
-                            print("")
-                            self.printGrid(self.grid, 2)
-                            self.stop = False
+        for value in self.grid[0]:
+            if not self.isValid(deepcopy(self.grid), 0, value):
+                pass
+        
         print("")
         print("ALL SOLUTIONS: (Number of solutions: " + str(len(self.solutions)) + ")")
         for solution in self.solutions:
             self.printGrid(solution, 1)
             print("")
+        print(len(self.solutions))
     
     def reduceOptions(self, cell):
         options = copy(self.grid[cell])
@@ -68,23 +56,19 @@ class Agent():
         newGrid = copy(grid)
         newGrid[cell] = [value]
         if cell + 1 < 81:
+            valid = False
             for value in newGrid[cell + 1]:
                 if self.isValid(copy(newGrid), cell + 1, value):
-                    return True
-            return False
+                    valid = True
+            if valid:
+                return True
+            else:
+                return False
         else:
-            cancelAppend = False
-            for solutionCell in newGrid:
-                if len(solutionCell) != 1:
-                    cancelAppend = True
-                    break
-            if not cancelAppend:
-                for existingSolution in self.solutions:
-                    if newGrid == existingSolution:
-                        cancelAppend = True
-                        break
-            if not cancelAppend:
-                self.solutions.append(copy(newGrid))
+            print("")
+            print("NEW SOLUTION FOUND: ")
+            self.printGrid(newGrid, 1)
+            self.solutions.append(copy(newGrid))
         return True
 
 
@@ -122,5 +106,5 @@ class Agent():
             if cell % 9 == 8:
                 print("")
 
-solver = Agent("005000600000000204000076090080700001400168002200009080060520000801000000003000700")
+solver = Agent("156200300040050060007008009010020030004005006700800900001002003400500600070080090")
 solver.run()
